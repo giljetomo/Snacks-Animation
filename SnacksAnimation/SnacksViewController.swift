@@ -9,12 +9,13 @@ import UIKit
 
 class SnacksViewController: UIViewController {
     
+    let cellId = "cell"
     var width: CGFloat?
     var navBarView: UIView!
     var tableView = UITableView()
     var isOpen = false
     
-    let snacks: [String] = ["Snack"]
+    var snacks: [String] = []
     
     let snacksTitle: UILabel = {
         let lbl = UILabel()
@@ -96,9 +97,9 @@ class SnacksViewController: UIViewController {
         return btn
     }()
     
-    let iceCreamButton: UIButton = {
+    let eggButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "icecream"), for: .normal)
+        btn.setImage(UIImage(named: "egg"), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFit
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.addTarget(self, action: #selector(snackSelected(_:)), for: .touchUpInside)
@@ -123,25 +124,37 @@ class SnacksViewController: UIViewController {
     }
     @objc func snackSelected(_ sender: UIButton) {
         guard let image = sender.currentImage else { return }
+        //animate button when tapped
+        UIView.animate(withDuration: 0.15) {
+            sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        } completion: { (_) in
+            UIView.animate(withDuration: 0.15) {
+                sender.transform = CGAffineTransform.identity
+            }
+        }
+        var selectedSnack: String
         
         switch image {
-        case UIImage(named: "steak"):
-            print("steak")
-        case UIImage(named: "fries"):
-            print("fries")
-        case UIImage(named: "burger"):
-            print("burger")
-        case UIImage(named: "icecream"):
-            print("ice cream")
-        case UIImage(named: "chicken"):
-            print("chicken")
-        default:
-            fatalError()
+            case UIImage(named: "steak"):
+                selectedSnack = "steak"
+            case UIImage(named: "fries"):
+                selectedSnack = "fries"
+            case UIImage(named: "burger"):
+                selectedSnack = "burger"
+            case UIImage(named: "egg"):
+                selectedSnack = "egg"
+            case UIImage(named: "chicken"):
+                selectedSnack = "chicken"
+            default:
+                fatalError()
         }
+        snacks.insert(selectedSnack, at: 0)
+        tableView.insertRows(at: [IndexPath.init(row: 0, section: 0)], with: .top)
     }
     
     func setupNavigationBar() {
         
+        tableView.register(SnackTableViewCell.self, forCellReuseIdentifier: cellId)
         width = view.frame.size.width
         navBarView = UIView(frame: CGRect(x: 0, y: 0, width: width!, height: 90))
         navBarView.backgroundColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
@@ -156,7 +169,7 @@ class SnacksViewController: UIViewController {
         hStackViewSnacks.addArrangedSubview(burgerButton)
         hStackViewSnacks.addArrangedSubview(friesButton)
         hStackViewSnacks.addArrangedSubview(steakButton)
-        hStackViewSnacks.addArrangedSubview(iceCreamButton)
+        hStackViewSnacks.addArrangedSubview(eggButton)
         hStackViewSnacks.addArrangedSubview(chickenButton)
         
         vContainerStackView.addArrangedSubview(hStackView)
@@ -221,7 +234,11 @@ extension SnacksViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return SnackTableViewCell()
+        let snack = snacks[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! SnackTableViewCell
+        
+        cell.snackLabel.text = snack
+        return cell
     }
     
     
