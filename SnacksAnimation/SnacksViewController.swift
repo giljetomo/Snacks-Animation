@@ -204,18 +204,8 @@ class SnacksViewController: UIViewController {
                 self.navBarView.frame = CGRect(x: 0, y: 0, width: self.width!, height: 90)
                 self.addButton.transform = .identity
             }
-            
-            isOpen.toggle()
-            hStackViewSnacks.isHidden.toggle()
-            addSnacksTitle.isHidden.toggle()
-            snacksTitle.isHidden.toggle()
             vContainerStackView.transform = .identity
-            
         } else {
-            hStackViewSnacks.isHidden.toggle()
-            addSnacksTitle.isHidden.toggle()
-            snacksTitle.isHidden.toggle()
-            
             UIView.animate(withDuration: 1.5, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 20, options: .transitionCurlDown) {
                 self.navBarView.frame = CGRect(x: 0, y: 0, width: self.width!, height: 250)
                 let rotateTransform = CGAffineTransform(rotationAngle: .pi/4)
@@ -223,8 +213,11 @@ class SnacksViewController: UIViewController {
                 let scaleTransform = CGAffineTransform(scaleX: 1, y: 1.05)
                 self.vContainerStackView.transform = scaleTransform
             }
-            isOpen.toggle()
         }
+        addSnacksTitle.isHidden.toggle()
+        hStackViewSnacks.isHidden.toggle()
+        isOpen.toggle()
+        snacksTitle.isHidden.toggle()
     }
 }
 
@@ -240,6 +233,4 @@ extension SnacksViewController: UITableViewDelegate, UITableViewDataSource {
         cell.snackLabel.text = snack
         return cell
     }
-    
-    
 }
